@@ -6,30 +6,34 @@ namespace AlkahestTeraDataDefsTranslator.Translators
 {
     class ZeroPayloadPacketsTranslator
     {
-        private string _newPacketNamespace = "namespace Alkahest.Core.Net.Protocol.Packets \n{\n";
-        private string _newPacketClassPart = "\tpublic sealed class {0}  : Packet \n\t{\n";
-        private string _nameField = "\t\tconst string Name = \"{0}\";\n";
-        private string _opcodeField = "\t\tpublic override string OpCode => Name;\n";
-        private string _constructor = "\t\t[Packet(Name)]\n\t\tinternal static Packet Create(){ \n\t\t\treturn new {0}();\n\t\t}\n";
-     //   private string _reusableAttribute = "[PacketField]";
-        private string _end = "\n\t}\n}";
+        private string _newPacketNamespace ;
+        private string _newPacketClassPart;
+        private string _nameField ;
+        private string _opcodeField ;
+        private string _constructor ;
+        private string _end ;
         private int ZeroPayloadFilesCount = 0;
         public ZeroPayloadPacketsTranslator()
         {
-
+          Information.Instance.AlkahestDatabase.TryGetValue(Information.DatabaseKey.NamespacePart,out  _newPacketNamespace );
+          Information.Instance.AlkahestDatabase.TryGetValue(Information.DatabaseKey.ClassPart, out _newPacketClassPart);
+          Information.Instance.AlkahestDatabase.TryGetValue(Information.DatabaseKey.PacketNameField, out _nameField);
+          Information.Instance.AlkahestDatabase.TryGetValue(Information.DatabaseKey.OpCodeField, out _opcodeField);
+          Information.Instance.AlkahestDatabase.TryGetValue(Information.DatabaseKey.Constructor, out _constructor);
+          Information.Instance.AlkahestDatabase.TryGetValue(Information.DatabaseKey.EndBrackets, out _end);
         }
 
         public void TranslateZeroPayloadFiles()
         {
             foreach (var file in Information.Instance.AlkahestFiles)
             {
-                RewriteSimplePacket(file);
+                RewriteZeroPacket(file);
             }
             Information.Instance.AlkahestFiles.RemoveAll(item => Information.Instance.AlkahestTranslatedFiles.Contains(item));
             ConsoleOutput.InformationMessage("Zero payload packets translation module: work ended -" + ZeroPayloadFilesCount);
         }
 
-        private void RewriteSimplePacket(FileInfo file)
+        private void RewriteZeroPacket(FileInfo file)
         {
             if (file.Length == 0)
             {
