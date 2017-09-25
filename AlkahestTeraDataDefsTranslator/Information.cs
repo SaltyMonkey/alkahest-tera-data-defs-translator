@@ -16,6 +16,8 @@ namespace AlkahestTeraDataDefsTranslator
         public string AlkahestDefsDirectory;
         public string TeraDataDefExtension;
         public string AlkahestDefExtension;
+        public string ReportFileName;
+        public string ReportDirectory;
         public enum DatabaseKey {
             NamespacePart,
             ClassPart,
@@ -59,6 +61,8 @@ namespace AlkahestTeraDataDefsTranslator
             OriginalFiles = new List<FileInfo>();
             TeraDataDefExtension = "def";
             AlkahestDefExtension = "cs";
+            ReportDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            ReportFileName = "report.txt";
         }
 
         public void RecheckTeraDataDefsDirectory()
