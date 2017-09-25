@@ -28,27 +28,27 @@ namespace AlkahestTeraDataDefsTranslator.Translators
             foreach (var file in Information.Instance.AlkahestFiles)
             {
                 RewriteZeroPacket(file);
+                Information.Instance.AlkahestTranslatedFiles.Add(file);
             }
             Information.Instance.AlkahestFiles.RemoveAll(item => Information.Instance.AlkahestTranslatedFiles.Contains(item));
             ConsoleOutput.InformationMessage("Zero payload packets translation module: work ended -" + ZeroPayloadFilesCount);
         }
 
-        private void RewriteZeroPacket(FileInfo file)
+        private void RewriteZeroPacket(Information.AlkahestFile file)
         {
-            if (file.Length == 0)
+            if (file.File.Length == 0)
             {
-                var filebody = File.ReadAllLines(file.FullName);
-                File.WriteAllText(file.FullName, string.Empty);
-                var packetName = file.Name.Replace(String.Format(".{0}",Information.Instance.AlkahestDefExtension), "");
+                var filebody = File.ReadAllLines(file.File.FullName);
+                File.WriteAllText(file.File.FullName, string.Empty);
+                var packetName = file.File.Name.Replace(String.Format(".{0}",Information.Instance.AlkahestDefExtension), "");
                 StringBuilder bldr = new StringBuilder();
                 bldr.Append(_newPacketNamespace);
                 bldr.Append(_newPacketClassPart).Replace("{0}", packetName);
-                bldr.Append(_nameField).Replace("{0}", packetName);
+                bldr.Append(_nameField).Replace("{0}", file.OldName);
                 bldr.Append(_opcodeField);
                 bldr.Append(_constructor).Replace("{0}", packetName);
                 bldr.Append(_end);
-                File.AppendAllText(file.FullName, bldr.ToString());
-                Information.Instance.AlkahestTranslatedFiles.Add(file);
+                File.AppendAllText(file.File.FullName, bldr.ToString());
                 ZeroPayloadFilesCount++;
             }
 

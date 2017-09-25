@@ -18,15 +18,20 @@ namespace AlkahestTeraDataDefsTranslator.Translators
             {
                
                 var convertedFileName = FileNameConverter(file);
-             //   ConsoleOutput.StandartMessage(String.Format("OriginalName:{0}, ConvertedName:{1}", file.Name, convertedFileName));
-                File.Copy(file.FullName, Path.Combine(Information.Instance.AlkahestDefsDirectory, convertedFileName)); 
+                File.Copy(file.FullName, Path.Combine(Information.Instance.AlkahestDefsDirectory, convertedFileName));
+                //Add in database file and old name (for compatibility with opcode list) 
+                var tmpfilename = file.Name.Replace($"{file.Extension}", "");
+                var dotIndex = tmpfilename.IndexOf('.');
+                if (dotIndex > 0) tmpfilename = tmpfilename.Substring(0, dotIndex);
+                Information.Instance.AlkahestFiles.Add(new Information.AlkahestFile { File = Information.Instance.GetFileFromAlkahestsDefsDirectory(convertedFileName), OldName =tmpfilename });
             }
-            Information.Instance.RecheckAlkahestsDefsDirectory();
+        
             ConsoleOutput.InformationMessage("File renaming module: work ended -"+ Information.Instance.AlkahestFiles.Count + " files");
         }
 
         private string FileNameConverter(FileInfo File)
         {
+            //Main code
             string convertedName = String.Empty;
             string convertedVersion = String.Empty;
             string fixedName = File.Name.ToLower().Replace($"{File.Extension}", "").Replace('.','_');
