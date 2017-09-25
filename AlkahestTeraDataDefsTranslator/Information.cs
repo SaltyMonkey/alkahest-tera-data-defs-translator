@@ -11,13 +11,33 @@ namespace AlkahestTeraDataDefsTranslator
         public List<FileInfo> AlkahestFiles;
         public List<FileInfo> AlkahestTranslatedFiles;
         public List<FileInfo> OriginalFiles;
+        public Dictionary<DatabaseKey, string> AlkahestDatabase;
         public string TeraDataDefsDirectory;
         public string AlkahestDefsDirectory;
         public string TeraDataDefExtension;
         public string AlkahestDefExtension;
-
+        public enum DatabaseKey {
+            NamespacePart,
+            ClassPart,
+            PacketNameField,
+            OpCodeField,
+            Constructor,
+            FieldAttribute,
+            EndBrackets
+        }
         public Information()
         {
+            AlkahestDatabase = new Dictionary<DatabaseKey, string>
+            {
+                { DatabaseKey.NamespacePart, "namespace Alkahest.Core.Net.Protocol.Packets \n{\n" },
+                { DatabaseKey.ClassPart, "\tpublic sealed class {0}  : Packet \n\t{\n" },
+                { DatabaseKey.PacketNameField, "\t\tconst string Name = \"{0}\";\n" },
+                { DatabaseKey.OpCodeField, "\t\tpublic override string OpCode => Name;\n" },
+                { DatabaseKey.Constructor, "\t\t[Packet(Name)]\n\t\tinternal static Packet Create(){ \n\t\t\treturn new {0}();\n\t\t}\n" },
+                { DatabaseKey.FieldAttribute, "[PacketField]" },
+                { DatabaseKey.EndBrackets, "\n\t}\n}" }
+            };
+
             AlkahestFiles = new List<FileInfo>();
             AlkahestTranslatedFiles = new List<FileInfo>();
             OriginalFiles = new List<FileInfo>();
