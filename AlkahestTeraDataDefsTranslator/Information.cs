@@ -23,7 +23,15 @@ namespace AlkahestTeraDataDefsTranslator
             OpCodeField,
             Constructor,
             FieldAttribute,
-            EndBrackets
+            EndBrackets,
+            Uint,
+            Byte,
+            FieldGetSet,
+            EntityId,
+            SkillId,
+            Long,
+            TemplateId,
+            Float
         }
         public Information()
         {
@@ -35,7 +43,15 @@ namespace AlkahestTeraDataDefsTranslator
                 { DatabaseKey.OpCodeField, "\t\tpublic override string OpCode => Name;\n" },
                 { DatabaseKey.Constructor, "\t\t[Packet(Name)]\n\t\tinternal static Packet Create(){ \n\t\t\treturn new {0}();\n\t\t}\n" },
                 { DatabaseKey.FieldAttribute, "[PacketField]" },
-                { DatabaseKey.EndBrackets, "\n\t}\n}" }
+                { DatabaseKey.EndBrackets, "\n\t}\n}" },
+                { DatabaseKey.Uint, "\npublic uint " },
+                { DatabaseKey.Byte, "\npublic byte " },
+                { DatabaseKey.Long, "\npublic float " },
+                { DatabaseKey.TemplateId, "\npublic TemplateId " },
+                { DatabaseKey.EntityId, "\npublic EntityId" },
+                { DatabaseKey.FieldGetSet, "{ get; set; }\n" },
+                { DatabaseKey.SkillId, "public SkillId\n" },
+
             };
 
             AlkahestFiles = new List<FileInfo>();
