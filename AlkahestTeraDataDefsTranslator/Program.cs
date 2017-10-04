@@ -16,12 +16,11 @@ namespace AlkahestTeraDataDefsTranslator
             //  Information.Instance.AlkahestDefsDirectory = String.Format("{0}\\{1}\\", AppDomain.CurrentDomain.BaseDirectory, "AlkahestProtocol");
             Information.Instance.TeraDataDefsDirectory = String.Format("{0}", @"D:\!Git\tera-data\protocol\");
             Information.Instance.AlkahestDefsDirectory = String.Format("{0}", @"D:\!Git\temp");
-            Information.Instance.CleanupAlkahestDirectory();
+            Translator trns = new Translator();
+            trns.DoWork();
        
-            RenamingTeraDataFiles nmchng = new RenamingTeraDataFiles();
-            nmchng.RenameAllFiles();
-            ZeroPayloadPacketsTranslator simplerwrt= new ZeroPayloadPacketsTranslator();
-            simplerwrt.TranslateZeroPayloadFiles();
+         
+         
             //Console.WriteLine("Empty packets converted!");
             Console.ReadLine();
         }

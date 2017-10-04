@@ -4,14 +4,14 @@ using System.IO;
 
 namespace AlkahestTeraDataDefsTranslator
 {
-    internal class Information
+    public class Information
     {
         private static Information _instance;
         public static Information Instance => _instance ?? (_instance = new Information());
         public List<AlkahestFile> AlkahestFiles;
         public List<AlkahestFile> AlkahestTranslatedFiles;
-        public List<FileInfo> OriginalFiles;
-        public Dictionary<DatabaseKey, string> AlkahestDatabase;
+        public List<DefFile> OriginalFiles;
+       
         public string TeraDataDefsDirectory;
         public string AlkahestDefsDirectory;
         public string TeraDataDefExtension;
@@ -19,13 +19,51 @@ namespace AlkahestTeraDataDefsTranslator
         public string ReportFileName;
         public string ReportDirectory;
 
-        public class AlkahestFile
-        {
-            public FileInfo File;
-            public string OldName = String.Empty;
-        }
 
-        public enum DatabaseKey {
+        public Dictionary<AlkFileStringType, string> AlkahestMarkers = new Dictionary<AlkFileStringType, string>
+        {
+
+            { AlkFileStringType.Uint, "\npublic uint {0}" },
+            { AlkFileStringType.Byte, "\npublic byte {0}" },
+            { AlkFileStringType.Float, "\npublic float {0}" },
+            { AlkFileStringType.String, "\npublic string {0}" },
+            { AlkFileStringType.Int32, "\npublic int32 {0}" },
+
+
+        };
+        public Dictionary< string,DefFileStringType> DefMarkers = new Dictionary<string, DefFileStringType>
+        {
+
+            {"int32", DefFileStringType.Int32},
+            {"int16", DefFileStringType.Int16},
+            {"uint32", DefFileStringType.UInt32},
+            {"uint16", DefFileStringType.UInt16},
+            {"int64", DefFileStringType.Int64},
+            {"string", DefFileStringType.String},
+            {"uint64", DefFileStringType.UInt64},
+            {"float", DefFileStringType.Float}
+
+        };
+        public Dictionary<DefFileStringType, AlkFileStringType> CompTypes = new Dictionary<DefFileStringType, AlkFileStringType>()
+        {     
+            {DefFileStringType.Float, AlkFileStringType.Float},
+            {DefFileStringType.String, AlkFileStringType.String},
+            {DefFileStringType.Int32, AlkFileStringType.Int32},
+
+        };
+        public enum DefFileStringType
+        {
+            UInt32,
+            UInt64,
+            Int32,
+            Int16,
+            UInt16,
+            Int64,
+            String,
+            Float
+        }
+        public enum AlkFileStringType
+        {
             NamespacePart,
             ClassPart,
             PacketNameField,
@@ -40,68 +78,27 @@ namespace AlkahestTeraDataDefsTranslator
             SkillId,
             Long,
             TemplateId,
-            Float
+            Float,
+            String,
+            Int32,
+            Int16
+
         }
+
         public Information()
         {
-            AlkahestDatabase = new Dictionary<DatabaseKey, string>
-            {
-                { DatabaseKey.NamespacePart, "namespace Alkahest.Core.Net.Protocol.Packets \n{\n" },
-                { DatabaseKey.ClassPart, "\tpublic sealed class {0}  : Packet \n\t{\n" },
-                { DatabaseKey.PacketNameField, "\t\tconst string Name = \"{0}\";\n" },
-                { DatabaseKey.OpCodeField, "\t\tpublic override string OpCode => Name;\n" },
-                { DatabaseKey.Constructor, "\t\t[Packet(Name)]\n\t\tinternal static Packet Create(){ \n\t\t\treturn new {0}();\n\t\t}\n" },
-                { DatabaseKey.FieldAttribute, "[PacketField]" },
-                { DatabaseKey.EndBrackets, "\n\t}\n}" },
-                { DatabaseKey.Uint, "\npublic uint " },
-                { DatabaseKey.Byte, "\npublic byte " },
-                { DatabaseKey.Long, "\npublic float " },
-                { DatabaseKey.TemplateId, "\npublic TemplateId " },
-                { DatabaseKey.EntityId, "\npublic EntityId" },
-                { DatabaseKey.FieldGetSet, "{ get; set; }\n" },
-                { DatabaseKey.SkillId, "public SkillId\n" },
-
-            };
+          
 
             AlkahestFiles = new List<AlkahestFile>();
             AlkahestTranslatedFiles = new List<AlkahestFile>();
-            OriginalFiles = new List<FileInfo>();
+            OriginalFiles = new List<DefFile>();
             TeraDataDefExtension = "def";
             AlkahestDefExtension = "cs";
             ReportDirectory = AppDomain.CurrentDomain.BaseDirectory;
             ReportFileName = "report.txt";
         }
 
-        public void RecheckTeraDataDefsDirectory()
-        {
-            DirectoryInfo defDir = new DirectoryInfo(Information.Instance.TeraDataDefsDirectory);
-            Information.Instance.OriginalFiles.AddRange(defDir.GetFiles(String.Format("*.{0}", Instance.TeraDataDefExtension)));
-        }
-        public void RecheckAlkahestsDefsDirectory()
-        {
-            DirectoryInfo defDir = new DirectoryInfo(Information.Instance.AlkahestDefsDirectory);
-            foreach (var file in defDir.GetFiles(String.Format("*.{0}", Instance.AlkahestDefExtension)))
-            {
-                Information.Instance.AlkahestFiles.Add(new AlkahestFile { File = file});
-            }
-          
-        }
-        //Hack... Idk how to do it normally
-        public FileInfo GetFileFromAlkahestsDefsDirectory(string FileName)
-        {
-            DirectoryInfo defDir = new DirectoryInfo(Information.Instance.AlkahestDefsDirectory);
-            return defDir.GetFiles(FileName)[0];
-
-        }
-
-        public void CleanupAlkahestDirectory()
-        {
-            DirectoryInfo defDir = new DirectoryInfo(Information.Instance.AlkahestDefsDirectory);
-            var tmp = defDir.GetFiles(String.Format("*.{0}", Instance.AlkahestDefExtension));
-            foreach (var file in tmp)
-            {
-                file.Delete();
-            }
-        }
+     
+       
     }
 }

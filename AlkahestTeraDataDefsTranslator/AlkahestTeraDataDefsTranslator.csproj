@@ -42,12 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlkahestBaseFile.cs" />
     <Compile Include="ConsoleOutput.cs" />
+    <Compile Include="DefBaseFile.cs" />
+    <Compile Include="BaseFile.cs" />
     <Compile Include="Information.cs" />
-    <Compile Include="Translators\RenamingTeraDataFiles.cs" />
+    <Compile Include="Report.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Translators\SimplePacketsTranslator.cs" />
+    <Compile Include="Translators\Translator.cs" />
     <Compile Include="Translators\ZeroPayloadPacketsTranslator.cs" />
   </ItemGroup>
   <ItemGroup>
